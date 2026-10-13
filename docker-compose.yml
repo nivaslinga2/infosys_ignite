@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  agentshield:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agentshield-gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - ENVIRONMENT=production
+      - QUALCOMM_MODEL=Llama-3.1-8B
+      - INFERENCE_CLOUD_ENDPOINT=https://aisuite.cirrascale.com/apis/v2
+      # Provide your key here or via host .env file:
+      - INFERENCE_CLOUD_API_KEY=${INFERENCE_CLOUD_API_KEY:-}
+      - QUALCOMM_API_KEY=${QUALCOMM_API_KEY:-}
+    volumes:
+      # Optional persistence for audit log records across container restarts
+      - audit_data:/app/backend/app/database
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  audit_data:
+    driver: local

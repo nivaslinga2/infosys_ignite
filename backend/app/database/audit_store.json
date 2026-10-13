@@ -313,7 +313,7 @@
   },
   {
     "action_id": "ACT-TEST-001",
-    "timestamp": "2026-10-13T20:13:44.980375+00:00",
+    "timestamp": "2026-10-13T20:37:06.054590+00:00",
     "user": "employee_42",
     "agent": "FinanceAgent",
     "role": "finance_operator",
@@ -367,7 +367,7 @@
             "runtime": "Qualcomm Cloud AI 100 SDK",
             "quantization": "INT8",
             "npu_active": true,
-            "inference_latency_ms": 1912.06,
+            "inference_latency_ms": 2402.72,
             "npu_power_mw": 1150,
             "throughput_tokens_sec": 142.0
           }
@@ -481,7 +481,7 @@
         "runtime": "Qualcomm Cloud AI 100 SDK",
         "quantization": "INT8",
         "npu_active": true,
-        "inference_latency_ms": 1912.06,
+        "inference_latency_ms": 2402.72,
         "npu_power_mw": 1150,
         "throughput_tokens_sec": 142.0
       }
@@ -506,7 +506,7 @@
   },
   {
     "action_id": "ACT-TEST-002",
-    "timestamp": "2026-10-13T20:13:47.806595+00:00",
+    "timestamp": "2026-10-13T20:37:10.119443+00:00",
     "user": "employee_42",
     "agent": "FinanceAgent",
     "role": "finance_operator",
@@ -558,7 +558,7 @@
             "runtime": "Qualcomm Cloud AI 100 SDK",
             "quantization": "INT8",
             "npu_active": true,
-            "inference_latency_ms": 2211.21,
+            "inference_latency_ms": 3323.77,
             "npu_power_mw": 1150,
             "throughput_tokens_sec": 142.0
           }
@@ -674,14 +674,14 @@
         "runtime": "Qualcomm Cloud AI 100 SDK",
         "quantization": "INT8",
         "npu_active": true,
-        "inference_latency_ms": 2211.21,
+        "inference_latency_ms": 3323.77,
         "npu_power_mw": 1150,
         "throughput_tokens_sec": 142.0
       }
     },
     "decision": "REVIEW",
     "approved_by": "manager_21",
-    "approval_timestamp": "2026-10-13T20:13:47.856901+00:00",
+    "approval_timestamp": "2026-10-13T20:37:10.161986+00:00",
     "execution_status": "EXECUTED",
     "execution_result": {
       "status": "SUCCESS",
@@ -694,12 +694,12 @@
       "reversible_until_hours": 24
     },
     "execution_error": null,
-    "notes": "ARGS_HASH:31a2a561a8f13e0e457e584eef00d1b4ec6952cbcb6d33330cd74a3a22471735|EXPIRES_AT:2026-10-13T20:28:47.806687+00:00|CREATED_AT:2026-10-13T20:13:47.806687+00:00",
+    "notes": "ARGS_HASH:31a2a561a8f13e0e457e584eef00d1b4ec6952cbcb6d33330cd74a3a22471735|EXPIRES_AT:2026-10-13T20:52:10.119522+00:00|CREATED_AT:2026-10-13T20:37:10.119522+00:00",
     "arguments_hash": "31a2a561a8f13e0e457e584eef00d1b4ec6952cbcb6d33330cd74a3a22471735"
   },
   {
     "action_id": "ACT-TEST-003",
-    "timestamp": "2026-10-13T20:13:50.972445+00:00",
+    "timestamp": "2026-10-13T20:37:13.722923+00:00",
     "user": "employee_42",
     "agent": "DatabaseOpsAgent",
     "role": "db_administrator",
@@ -751,7 +751,7 @@
             "runtime": "Qualcomm Cloud AI 100 SDK",
             "quantization": "INT8",
             "npu_active": true,
-            "inference_latency_ms": 2523.15,
+            "inference_latency_ms": 2492.81,
             "npu_power_mw": 1150,
             "throughput_tokens_sec": 142.0
           }
@@ -866,7 +866,7 @@
         "runtime": "Qualcomm Cloud AI 100 SDK",
         "quantization": "INT8",
         "npu_active": true,
-        "inference_latency_ms": 2523.15,
+        "inference_latency_ms": 2492.81,
         "npu_power_mw": 1150,
         "throughput_tokens_sec": 142.0
       }
@@ -882,7 +882,7 @@
   },
   {
     "action_id": "ACT-TEST-004",
-    "timestamp": "2026-10-13T20:13:55.337938+00:00",
+    "timestamp": "2026-10-13T20:37:19.154874+00:00",
     "user": "employee_42",
     "agent": "FinanceAgent",
     "role": "finance_operator",
@@ -934,7 +934,7 @@
             "runtime": "Qualcomm Cloud AI 100 SDK",
             "quantization": "INT8",
             "npu_active": true,
-            "inference_latency_ms": 2229.48,
+            "inference_latency_ms": 2377.3,
             "npu_power_mw": 1150,
             "throughput_tokens_sec": 142.0
           }
@@ -1064,7 +1064,7 @@
         "runtime": "Qualcomm Cloud AI 100 SDK",
         "quantization": "INT8",
         "npu_active": true,
-        "inference_latency_ms": 2229.48,
+        "inference_latency_ms": 2377.3,
         "npu_power_mw": 1150,
         "throughput_tokens_sec": 142.0
       }
@@ -1080,7 +1080,7 @@
   },
   {
     "action_id": "ACT-TEST-005",
-    "timestamp": "2026-10-13T20:13:58.190623+00:00",
+    "timestamp": "2026-10-13T20:37:23.110108+00:00",
     "user": "employee_42",
     "agent": "FinanceAgent",
     "role": "finance_operator",
@@ -1132,7 +1132,7 @@
             "runtime": "Qualcomm Cloud AI 100 SDK",
             "quantization": "INT8",
             "npu_active": true,
-            "inference_latency_ms": 2270.72,
+            "inference_latency_ms": 2689.58,
             "npu_power_mw": 1150,
             "throughput_tokens_sec": 142.0
           }
@@ -1248,7 +1248,7 @@
         "runtime": "Qualcomm Cloud AI 100 SDK",
         "quantization": "INT8",
         "npu_active": true,
-        "inference_latency_ms": 2270.72,
+        "inference_latency_ms": 2689.58,
         "npu_power_mw": 1150,
         "throughput_tokens_sec": 142.0
       }
