@@ -23,6 +23,8 @@ def generate_explanation(
             f"- Intent: {intent_reason}",
             f"- Provenance: {provenance_reason}"
         ]
+        if semantic_reason and any(k in semantic_reason.lower() for k in ["fail", "fail-closed", "offline", "error", "block"]):
+            lines.append(f"- AI Semantic Validator: {semantic_reason}")
         if schema_reason and any(k in schema_reason.lower() for k in ["fail", "schema", "invalid", "malformed"]):
             lines.append(f"- Schema Validation: {schema_reason}")
         if jailbreak_reason and any(k in jailbreak_reason.lower() for k in ["fail", "block", "attack", "injection", "adversarial"]):

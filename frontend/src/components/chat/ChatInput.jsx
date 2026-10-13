@@ -47,7 +47,7 @@ export default function ChatInput({
           </button>
         </div>
         <p className="text-[10px] text-center text-slate-500">
-          AgentShield validates all agent proposals via Qualcomm Cloud AI 100, OPA policies & NeMo Guardrails before tool execution.
+          AgentShield validates all agent proposals via Qualcomm AI semantic analysis, RBAC policies & the Action Integrity Gate before tool execution.
         </p>
       </div>
     </div>

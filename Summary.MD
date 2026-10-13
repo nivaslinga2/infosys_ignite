@@ -38,11 +38,11 @@ Phase 7: Live Cloud NPU Hardware Run + MCP Production Scale         [ EXPECTED N
 - **Zero Direct Tool Execution**: The agent possesses zero pathways to invoke production tools directly. All execution flows are mediated by AgentShield.
 - **Action Contract Normalizer**: Standardizes agent proposals into structured JSON contracts capturing `Who`, `What`, `Why`, `Which Tool`, `Target & Parameters`, `Environment`, and `Provenance`.
 
-### 3.2. Ten Parallel Independent Validators (Including NVIDIA NeMo Suite)
+### 3.2. Ten Parallel Independent Validators (AgentShield Action Integrity Engine)
 1. **AI Semantic Validator (Qualcomm AI)**:
    - Evaluates action semantics, business impact, sensitivity (low/medium/high/critical), destructive potential, and external side-effects.
    - Emits Qualcomm Snapdragon NPU / Cloud AI telemetry (inference latency ~21ms, power draw, INT8 quantization).
-2. **Deterministic Authorization Engine (OPA & Rego)**:
+2. **Custom Deterministic Authorization Engine (Authoritative RBAC & OPA)**:
    - Evaluates explicit declarative rules ([`finance.rego`](file:///c:/Users/nivas/Desktop/Gaurdrail/backend/app/policy/policies/finance.rego), [`database.rego`](file:///c:/Users/nivas/Desktop/Gaurdrail/backend/app/policy/policies/database.rego), [`general.rego`](file:///c:/Users/nivas/Desktop/Gaurdrail/backend/app/policy/policies/general.rego)).
    - Enforces deterministic boundaries: `refund <= ₹5,000` $\rightarrow$ ALLOW; `₹5,000 < refund <= ₹50,000` $\rightarrow$ HUMAN REVIEW; `refund > ₹50,000` $\rightarrow$ BLOCK.
 3. **Safety & Risk Engine**:
@@ -53,14 +53,14 @@ Phase 7: Live Cloud NPU Hardware Run + MCP Production Scale         [ EXPECTED N
    - Detects goal-drift between user instructions and agent proposals (e.g., user asks to *"find refund options"*, but agent proposes executing a payment $\rightarrow$ **BLOCK**).
 6. **Provenance & Taint Tracking Guard**:
    - Taint-tracking and source verification to neutralize prompt injections originating from untrusted web pages or external context.
-7. **🛡️ Content Safety Rail (NVIDIA NeMo)**:
+7. **🛡️ Content Safety Rail**:
    - Dual-tier deterministic & semantic content moderation filtering hate speech, violence/weapons, self-harm, cyberattacks/malware, and severe toxicity.
-8. **🎯 Topic Control Rail (NVIDIA NeMo)**:
+8. **🎯 Topic Control Rail**:
    - Enforces conversational enterprise boundaries (Support, Billing, Database Ops); cleanly intercepts off-topic discussions (politics, medical/legal advice, gambling) with polite redirection flows.
-9. **🔏 PII Detection & Reversible Masking (NVIDIA NeMo)**:
+9. **🔏 PII Detection & Reversible Masking**:
    - Identifies sensitive personal and financial data (SSN, Aadhaar, Credit Cards, Emails, Phone numbers, API Secrets) with reversible tokenization (`[EMAIL_1]`) via session vault and exfiltration blocking.
-10. **🔒 Advanced Jailbreak & Adversarial Rail (NVIDIA NeMo)**:
-    - Multi-vector detection against DAN modes, persona overrides, prefix injection, delimiter tampering, base64 payload smuggling, and system prompt exfiltration.
+10. **🔒 Advanced Jailbreak & Adversarial Normalization Guard**:
+    - Multi-vector detection against DAN modes, persona overrides, prefix injection, delimiter tampering, base64 payload smuggling, and Unicode evasion (arXiv:2504.09559).
 
 ### 3.3. Decision Engine & Human Review Gate
 - Maps multi-vector signals to three definitive outcomes:

@@ -9,7 +9,7 @@ from app.guardrails.jailbreak import jailbreak_guard
 from app.guardrails.orchestrator import guardrails_orchestrator
 from app.models.decision import CheckResult
 
-router = APIRouter(prefix="/api/guardrails", tags=["Guardrails (NeMo Suite)"])
+router = APIRouter(prefix="/api/guardrails", tags=["Input Security & Inspection"])
 
 class PIIMaskRequest(BaseModel):
     text: str = Field(..., description="Raw text containing potential PII")

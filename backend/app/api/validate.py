@@ -14,6 +14,7 @@ async def validate_action(contract: ActionContract):
     try:
         report = await decision_engine.evaluate_action(contract)
 
+        exec_status = "BLOCKED" if report.decision == DecisionOutcome.BLOCK else ("PENDING_REVIEW" if report.decision == DecisionOutcome.REVIEW else "PENDING")
         audit_record = AuditRecord(
             action_id=contract.action_id,
             user=contract.user,
@@ -26,10 +27,13 @@ async def validate_action(contract: ActionContract):
             action_contract=contract,
             validation_report=report,
             decision=report.decision,
-            execution_status="BLOCKED" if report.decision == DecisionOutcome.BLOCK else "PENDING"
+            execution_status=exec_status
         )
-        audit_db.save_record(audit_record)
+        if report.decision == DecisionOutcome.REVIEW:
+            from app.core.approval_engine import approval_engine
+            approval_engine.initialize_approval_context(audit_record)
 
+        audit_db.save_record(audit_record)
         return report
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Validation failed: {str(e)}")

@@ -108,7 +108,7 @@ async def run_verification():
         report = val_res.json()
         assert report["decision"] == "BLOCK"
 
-        # NeMo Guardrails Endpoint Verifications
+        # AgentShield Custom Input Security & Guardrails Verifications
         # 1. PII Masking & Unmasking
         pii_res = await client.post("/api/guardrails/pii/mask", json={
             "text": "Send credentials to bob@example.com with CC: 4532-1188-9922-3344"
@@ -162,7 +162,7 @@ async def run_verification():
         assert metrics_res.status_code == 200
         metrics = metrics_res.json()
         assert metrics["total_actions"] >= 5
-        print("All verification flows passed (including NVIDIA NeMo Guardrail suite).")
+        print("All verification flows passed (AgentShield Action Integrity Engine & Security Suite).")
 
 if __name__ == "__main__":
     asyncio.run(run_verification())

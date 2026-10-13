@@ -35,6 +35,9 @@ class DecisionEngine:
                 reason=f"Fail-Closed Defense (AI Semantic Validator Offline): {str(e)}"
             )
 
+        from app.core.authorization_engine import authorization_engine
+        custom_auth_res = authorization_engine.evaluate(contract)
+
         try:
             opa_res = await opa_client.evaluate(contract)
         except Exception as e:
@@ -43,6 +46,16 @@ class DecisionEngine:
                 status="FAIL",
                 reason=f"Fail-Closed Defense (OPA Policy Engine Offline): {str(e)}"
             )
+
+        # Authoritative Authorization: Custom RBAC engine takes precedence
+        if not custom_auth_res.passed or custom_auth_res.status == "FAIL":
+            auth_res = custom_auth_res
+        elif not opa_res.passed or opa_res.status == "FAIL":
+            auth_res = opa_res
+        elif custom_auth_res.status == "WARN":
+            auth_res = custom_auth_res
+        else:
+            auth_res = opa_res
 
         try:
             content_safety_res = await content_safety_engine.evaluate(contract)
@@ -82,7 +95,7 @@ class DecisionEngine:
         # Hard Block evaluations (Fail Closed)
         if not schema_res.passed or schema_res.status == "FAIL":
             decision = DecisionOutcome.BLOCK
-        elif not opa_res.passed or opa_res.status == "FAIL":
+        elif not auth_res.passed or auth_res.status == "FAIL":
             decision = DecisionOutcome.BLOCK
         elif not provenance_res.passed or provenance_res.status == "FAIL":
             decision = DecisionOutcome.BLOCK
@@ -102,7 +115,7 @@ class DecisionEngine:
             decision = DecisionOutcome.BLOCK
         elif risk_score >= 85.0:
             decision = DecisionOutcome.BLOCK
-        elif opa_res.status == "WARN" or opa_res.metadata.get("rule") == "review_refund_threshold":
+        elif auth_res.status == "WARN" or auth_res.metadata.get("rule") in ["review_refund_threshold", "review_transfer_threshold", "review_destructive_sql_staging"]:
             decision = DecisionOutcome.REVIEW
         elif risk_score >= 60.0:
             decision = DecisionOutcome.REVIEW
@@ -118,7 +131,7 @@ class DecisionEngine:
             tool=contract.tool,
             risk_score=risk_score,
             reversibility=reversibility_tier,
-            auth_reason=opa_res.reason,
+            auth_reason=auth_res.reason,
             semantic_reason=semantic_res.reason,
             intent_reason=intent_res.reason,
             provenance_reason=provenance_res.reason,
@@ -135,7 +148,7 @@ class DecisionEngine:
         return ValidationReport(
             action_id=contract.action_id,
             ai_semantic=semantic_res,
-            authorization=opa_res,
+            authorization=auth_res,
             risk_assessment=risk_check,
             reversibility=reversibility_res,
             intent_alignment=intent_res,

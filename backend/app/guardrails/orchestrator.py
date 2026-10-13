@@ -7,13 +7,13 @@ from app.guardrails.content_safety import content_safety_engine
 from app.guardrails.topic_control import topic_control_engine
 from app.guardrails.jailbreak import jailbreak_guard
 
-class GuardrailsOrchestrator:
+class InputSecurityOrchestrator:
     """
-    Unified Guardrails Suite providing NVIDIA NeMo-grade protections:
-    1. Content Safety (Toxicity, Violence, Hate, Self-Harm)
-    2. Jailbreak & Prompt Injection Protection
+    AgentShield Custom Input Security & Guardrails Suite:
+    1. Content Safety (Toxicity, Violence, Hate Speech, Cyberattacks)
+    2. Jailbreak & Prompt Injection Defense (Adversarial signatures & Unicode normalization)
     3. Topic Control (Enterprise Domain Boundaries)
-    4. PII Detection & Reversible Masking
+    4. PII Detection & Reversible Session Token Vault
     """
     def __init__(self):
         self.pii = pii_engine
@@ -22,7 +22,7 @@ class GuardrailsOrchestrator:
         self.jailbreak = jailbreak_guard
 
     async def evaluate_all(self, contract: ActionContract) -> Dict[str, CheckResult]:
-        """Runs all 4 NeMo guardrails in parallel against the action contract."""
+        """Runs all 4 custom guardrails against the action contract."""
         safety_task = self.safety.evaluate(contract)
         topic_res = self.topic.evaluate(contract)
         jailbreak_res = self.jailbreak.evaluate(contract)
@@ -38,7 +38,7 @@ class GuardrailsOrchestrator:
         }
 
     async def inspect_prompt(self, prompt: str, vault_id: Optional[str] = None) -> Dict[str, Any]:
-        """Inspects raw text across all guardrails (useful for direct agent chat input inspection)."""
+        """Inspects raw text across all guardrails (for direct agent chat input inspection)."""
         safety_res = await self.safety.evaluate_text(prompt)
         topic_res = self.topic.evaluate_text(prompt)
         jb_res = self.jailbreak.evaluate_text(prompt)
@@ -58,4 +58,5 @@ class GuardrailsOrchestrator:
             }
         }
 
-guardrails_orchestrator = GuardrailsOrchestrator()
+guardrails_orchestrator = InputSecurityOrchestrator()
+GuardrailsOrchestrator = InputSecurityOrchestrator

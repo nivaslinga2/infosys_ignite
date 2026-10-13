@@ -18,7 +18,8 @@ async def get_metrics() -> Dict[str, Any]:
     reviewed = sum(1 for r in records if r.decision == DecisionOutcome.REVIEW)
     blocked = sum(1 for r in records if r.decision == DecisionOutcome.BLOCK)
     executed = sum(1 for r in records if r.execution_status == "EXECUTED")
-    avg_risk = sum(r.validation_report.composite_risk_score for r in records) / total if total > 0 else 0.0
+    valid_reports = [r.validation_report.composite_risk_score for r in records if r.validation_report and r.validation_report.composite_risk_score is not None]
+    avg_risk = (sum(valid_reports) / len(valid_reports)) if valid_reports else 0.0
 
     return {
         "total_actions": total,

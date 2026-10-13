@@ -64,34 +64,5 @@ async def dispatch_tool_execution(contract: ActionContract) -> Dict[str, Any]:
 
 @router.post("/execute/{action_id}")
 async def execute_action(action_id: str):
-    record = audit_db.get_record(action_id)
-    if not record:
-        raise HTTPException(status_code=404, detail=f"Action '{action_id}' not found.")
-
-    if record.decision == DecisionOutcome.BLOCK:
-        raise HTTPException(
-            status_code=403,
-            detail=f"Execution rejected: action '{action_id}' was blocked by policy."
-        )
-
-    if record.decision == DecisionOutcome.REVIEW and not record.approved_by:
-        raise HTTPException(
-            status_code=403,
-            detail=f"Execution rejected: action '{action_id}' is awaiting review approval."
-        )
-
-    try:
-        result = await dispatch_tool_execution(record.action_contract)
-        record.execution_status = "EXECUTED"
-        record.execution_result = result
-        audit_db.save_record(record)
-        return {
-            "action_id": action_id,
-            "status": "EXECUTED",
-            "result": result
-        }
-    except Exception as e:
-        record.execution_status = "FAILED"
-        record.execution_error = str(e)
-        audit_db.save_record(record)
-        raise HTTPException(status_code=500, detail=f"Execution error: {str(e)}")
+    from app.middleware.execution_gate import execution_gate
+    return await execution_gate.execute_action(action_id)
