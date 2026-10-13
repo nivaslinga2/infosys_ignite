@@ -21,10 +21,13 @@ class AuditRecord(BaseModel):
     target: Dict[str, Any]
     environment: str
     action_contract: ActionContract
-    validation_report: ValidationReport
+    validation_report: Optional[ValidationReport] = None
     decision: DecisionOutcome
     approved_by: Optional[str] = None
     approval_timestamp: Optional[str] = None
-    execution_status: str = "PENDING"  # PENDING, EXECUTED, BLOCKED, REJECTED
+    execution_status: str = "PENDING"
     execution_result: Optional[Dict[str, Any]] = None
     execution_error: Optional[str] = None
+    notes: Optional[str] = None
+    arguments_hash: Optional[str] = None
+

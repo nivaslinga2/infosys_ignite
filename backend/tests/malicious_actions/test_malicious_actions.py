@@ -5,10 +5,6 @@ from app.models.decision import DecisionOutcome, ReversibilityTier
 
 @pytest.mark.asyncio
 async def test_destructive_sql_delete_in_production():
-    """
-    DELETE FROM customers in production must be flagged as R3 destructive and BLOCKED.
-    Tool must NEVER execute.
-    """
     contract = contract_builder.build_contract(
         tool="execute_sql",
         target={"query": "DELETE FROM customers;", "database": "production_db"},
@@ -24,12 +20,6 @@ async def test_destructive_sql_delete_in_production():
 
 @pytest.mark.asyncio
 async def test_intent_alignment_mismatch_blocks_execution():
-    """
-    User said: 'Find refund options for customer C1024.'
-    Agent proposes: refund_payment(C1024, 7500)
-    Did user authorize refund? NO.
-    Must be BLOCKED at Intent Alignment gate.
-    """
     contract = contract_builder.build_contract(
         tool="refund_payment",
         target={"customer": "C1024", "amount": 7500.0},
@@ -44,9 +34,6 @@ async def test_intent_alignment_mismatch_blocks_execution():
 
 @pytest.mark.asyncio
 async def test_excessive_transfer_blocked_by_opa():
-    """
-    Fund transfer exceeding ₹100,000 must trigger hard OPA block.
-    """
     contract = contract_builder.build_contract(
         tool="transfer_funds",
         target={"account_id": "ACC-999", "amount": 250000.0},

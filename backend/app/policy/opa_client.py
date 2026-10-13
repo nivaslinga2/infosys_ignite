@@ -11,10 +11,6 @@ class OPAClient:
         self.opa_url = opa_url
 
     async def evaluate(self, contract: ActionContract) -> CheckResult:
-        """
-        Evaluates the ActionContract against deterministic authorization policies.
-        Attempts HTTP OPA server first; falls back to embedded Rego policy engine.
-        """
         payload = {
             "input": {
                 "agent": contract.agent,
@@ -30,7 +26,6 @@ class OPAClient:
             }
         }
 
-        # Try live OPA HTTP API if reachable
         try:
             async with httpx.AsyncClient(timeout=0.3) as client:
                 resp = await client.post(f"{self.opa_url}/v1/data/agentshield", json=payload)
@@ -38,7 +33,6 @@ class OPAClient:
                     data = resp.json().get("result", {})
                     return self._interpret_opa_response(data, contract)
         except Exception:
-            # Fallback cleanly to embedded deterministic Rego rule execution
             pass
 
         return self._evaluate_embedded_policies(payload["input"], contract)
@@ -51,7 +45,6 @@ class OPAClient:
         trusted = inp.get("trusted", True)
         env = inp.get("environment", "production")
 
-        # 1. Finance policy rules (finance.rego)
         if tool == "refund_payment":
             if amount > 50000:
                 return CheckResult(
@@ -98,7 +91,6 @@ class OPAClient:
                     metadata={"policy": "finance.rego", "rule": "allow_transfer"}
                 )
 
-        # 2. Database policy rules (database.rego)
         if tool == "execute_sql":
             if any(k in query for k in ["delete", "drop", "truncate"]):
                 if env == "production" or "drop" in query or "truncate" in query:
@@ -131,7 +123,6 @@ class OPAClient:
                 metadata={"policy": "database.rego", "rule": "allow_customer_read"}
             )
 
-        # 3. General policy rules (general.rego)
         if tool in ["create_support_ticket", "read_file"]:
             return CheckResult(
                 passed=True,
@@ -170,7 +161,6 @@ class OPAClient:
                 metadata={"policy": "general.rego", "rule": "review_data_export"}
             )
 
-        # Default fallback
         return CheckResult(
             passed=True,
             status="WARN",

@@ -52,19 +52,24 @@ USER ──► QUALCOMM AI AGENT ──► ACTION INTERCEPTOR (PEP) ──► AC
 2. **Standardized Action Contract**:
    - Every proposal is normalized into an immutable contract tracking `Who`, `What`, `Why`, `Which Tool`, `Which Target`, `Which Environment`, and `Provenance`.
 
-3. **6 Independent Parallel Validators**:
+3. **10 Independent Parallel Validators (AgentShield + NVIDIA NeMo Guardrails)**:
    - **Check 1: AI Semantic Validator (Qualcomm AI)**: Identifies business meaning, sensitivity, and operational side-effects.
    - **Check 2: Authorization Engine (OPA & Rego)**: Strict deterministic rule evaluation (e.g. `refund <= ₹5,000` $\rightarrow$ ALLOW, `> ₹5,000` $\rightarrow$ REVIEW, `> ₹50,000` $\rightarrow$ BLOCK).
    - **Check 3: Safety / Risk Engine**: Transparent composite score $(0 - 100)$ factoring in sensitivity, monetary outflow, environment exposure, blast radius, and reversibility.
    - **Check 4: Reversibility Taxonomy**: Classifies actions into **R1** (Instant rollback), **R2** (Time-bounded window, e.g. 24h refund settlement), and **R3** (Irreversible destruction).
    - **Check 5: Intent Alignment**: Catches subtle goal-drift (e.g. User asks *"Find refund options"*, but agent proposes executing a payment $\rightarrow$ **BLOCK**).
-   - **Check 6: Provenance & Injection Guard**: Taint-tracking and adversarial pattern filtering to stop prompt injections.
+   - **Check 6: Provenance Gate**: Taint-tracking and origin validation for untrusted external web pages.
+   - **Check 7: 🛡️ Content Safety Rail (NVIDIA NeMo)**: Dual-tier deterministic & semantic filter neutralizing hate speech, violence/weapons, self-harm, and cyberattacks.
+   - **Check 8: 🎯 Topic Control Rail (NVIDIA NeMo)**: Enforces enterprise conversational boundaries and provides polite redirection for off-topic inquiries (politics, medical/legal advice, gambling).
+   - **Check 9: 🔏 PII Detection & Reversible Masking (NVIDIA NeMo)**: High-speed detection of SSN, Aadhaar, Credit Cards, Emails, Phones, and API Secrets with reversible vault tokenization (`[EMAIL_1]`) and exfiltration prevention.
+   - **Check 10: 🔒 Advanced Jailbreak Rail (NVIDIA NeMo)**: Defends against DAN modes, persona virtualization, prefix injections, delimiter smuggling, and prompt extraction attacks.
 
 4. **Human-in-the-Loop Gate**:
    - When actions are flagged for **HUMAN REVIEW**, execution halts at the gateway. Designated supervisors (`manager_21`) can inspect the risk profile and either approve or reject the action.
 
 5. **Complete Decision Trace & Audit Trail**:
    - Retains granular telemetry, NPU latency, rule identifiers, reviewer notes, and execution results.
+
 
 ---
 

@@ -8,10 +8,6 @@ from app.api.approval import submit_human_approval
 
 @pytest.mark.asyncio
 async def test_threshold_triggers_human_review():
-    """
-    Refund of ₹7,500 is above autonomous limit (₹5,000) but below hard cap (₹50,000).
-    Must evaluate to HUMAN REVIEW.
-    """
     contract = contract_builder.build_contract(
         tool="refund_payment",
         target={"customer": "C1024", "amount": 7500.0},
@@ -26,10 +22,6 @@ async def test_threshold_triggers_human_review():
 
 @pytest.mark.asyncio
 async def test_human_approval_executes_tool():
-    """
-    When an action paused in REVIEW receives supervisor approval,
-    it executes the tool and records approved status.
-    """
     contract = contract_builder.build_contract(
         tool="refund_payment",
         target={"customer": "C1024", "amount": 7500.0},
@@ -39,7 +31,6 @@ async def test_human_approval_executes_tool():
     )
     report = await decision_engine.evaluate_action(contract)
     
-    # Store in audit DB as pending review
     audit_record = AuditRecord(
         action_id=contract.action_id,
         user=contract.user,
@@ -56,7 +47,6 @@ async def test_human_approval_executes_tool():
     )
     audit_db.save_record(audit_record)
 
-    # Human supervisor approves
     approval_req = HumanApprovalRequest(
         action_id=contract.action_id,
         approved=True,

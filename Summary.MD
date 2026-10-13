@@ -9,10 +9,11 @@
 
 | Metric / Dimension | Status | Notes |
 | :--- | :--- | :--- |
-| **Current Stage** | **Phase 5 & Phase 6 Complete (Full MVP + Security Suite)** | All 6 validation engines, PEP Gateway, Human-in-the-Loop workflow, 4 React screens, and automated tests are implemented and verified. |
-| **Test Verification** | **10/10 Tests Passed (100%)** | Full test coverage across `safe_actions`, `malicious_actions`, `prompt_injection`, and `authorization`. |
-| **End-to-End Health** | **7/7 Critical Flows Verified** | E2E integration test script verified end-to-end via `verify_e2e.py`. |
-| **Expected Next Stage** | **Production Scale & Advanced Integration** | Live Qualcomm AI Hub API key connection, containerization (Docker/Compose), OPA daemon clustering, and Model Context Protocol (MCP) tool integration. |
+| **Current Stage** | **Complete Full Working Runtime Validator (OWASP LLM 2025 + NIST AI RMF)** | All 10 validation engines, Tool Schema Validator (LLM05), Rate Limiting (LLM10), Fail-Closed Defense, PEP Gateway, Human-in-the-Loop, and React UI verified. |
+| **Test Verification** | **24/24 Tests Passed (100%)** | Full test coverage across `acceptance_suite` (8/8), `safe_actions`, `malicious_actions`, `prompt_injection`, `authorization`, and `guardrails`. |
+| **End-to-End Health** | **12/12 Critical Flows Verified** | Complete E2E integration test script verified end-to-end via `verify_e2e.py`. |
+| **Documentation & Compliance** | **OWASP Top 10 & NIST AI RMF Documented** | Dedicated [`risk-register.md`](file:///c:/Users/nivas/Desktop/Gaurdrail/docs/risk-register.md) and [`evaluation-results.md`](file:///c:/Users/nivas/Desktop/Gaurdrail/docs/evaluation-results.md) created. |
+
 
 ---
 
@@ -37,12 +38,12 @@ Phase 7: Live Cloud NPU Hardware Run + MCP Production Scale         [ EXPECTED N
 - **Zero Direct Tool Execution**: The agent possesses zero pathways to invoke production tools directly. All execution flows are mediated by AgentShield.
 - **Action Contract Normalizer**: Standardizes agent proposals into structured JSON contracts capturing `Who`, `What`, `Why`, `Which Tool`, `Target & Parameters`, `Environment`, and `Provenance`.
 
-### 3.2. Six Parallel Independent Validators
+### 3.2. Ten Parallel Independent Validators (Including NVIDIA NeMo Suite)
 1. **AI Semantic Validator (Qualcomm AI)**:
    - Evaluates action semantics, business impact, sensitivity (low/medium/high/critical), destructive potential, and external side-effects.
    - Emits Qualcomm Snapdragon NPU / Cloud AI telemetry (inference latency ~21ms, power draw, INT8 quantization).
 2. **Deterministic Authorization Engine (OPA & Rego)**:
-   - Evaluates explicit declarative rules ([`finance.rego`](file:///d:/workspace/qualcomm/backend/app/policy/policies/finance.rego), [`database.rego`](file:///d:/workspace/qualcomm/backend/app/policy/policies/database.rego), [`general.rego`](file:///d:/workspace/qualcomm/backend/app/policy/policies/general.rego)).
+   - Evaluates explicit declarative rules ([`finance.rego`](file:///c:/Users/nivas/Desktop/Gaurdrail/backend/app/policy/policies/finance.rego), [`database.rego`](file:///c:/Users/nivas/Desktop/Gaurdrail/backend/app/policy/policies/database.rego), [`general.rego`](file:///c:/Users/nivas/Desktop/Gaurdrail/backend/app/policy/policies/general.rego)).
    - Enforces deterministic boundaries: `refund <= ₹5,000` $\rightarrow$ ALLOW; `₹5,000 < refund <= ₹50,000` $\rightarrow$ HUMAN REVIEW; `refund > ₹50,000` $\rightarrow$ BLOCK.
 3. **Safety & Risk Engine**:
    - Computes an explainable, transparent composite risk score ($0 - 100$) combining sensitivity, financial impact, environment exposure, blast radius, and reversibility.
@@ -50,14 +51,23 @@ Phase 7: Live Cloud NPU Hardware Run + MCP Production Scale         [ EXPECTED N
    - Classifies operations into **R1** (Instant rollback), **R2** (Conditionally reversible within a time window, e.g., 24h refund settlement), and **R3** (Irreversible destruction, e.g., `DELETE FROM customers`).
 5. **Intent Alignment Engine**:
    - Detects goal-drift between user instructions and agent proposals (e.g., user asks to *"find refund options"*, but agent proposes executing a payment $\rightarrow$ **BLOCK**).
-6. **Provenance & Prompt Injection Guard**:
-   - Taint-tracking and regex signature scanner to neutralize prompt injections originating from untrusted web pages or external context.
+6. **Provenance & Taint Tracking Guard**:
+   - Taint-tracking and source verification to neutralize prompt injections originating from untrusted web pages or external context.
+7. **🛡️ Content Safety Rail (NVIDIA NeMo)**:
+   - Dual-tier deterministic & semantic content moderation filtering hate speech, violence/weapons, self-harm, cyberattacks/malware, and severe toxicity.
+8. **🎯 Topic Control Rail (NVIDIA NeMo)**:
+   - Enforces conversational enterprise boundaries (Support, Billing, Database Ops); cleanly intercepts off-topic discussions (politics, medical/legal advice, gambling) with polite redirection flows.
+9. **🔏 PII Detection & Reversible Masking (NVIDIA NeMo)**:
+   - Identifies sensitive personal and financial data (SSN, Aadhaar, Credit Cards, Emails, Phone numbers, API Secrets) with reversible tokenization (`[EMAIL_1]`) via session vault and exfiltration blocking.
+10. **🔒 Advanced Jailbreak & Adversarial Rail (NVIDIA NeMo)**:
+    - Multi-vector detection against DAN modes, persona overrides, prefix injection, delimiter tampering, base64 payload smuggling, and system prompt exfiltration.
 
 ### 3.3. Decision Engine & Human Review Gate
 - Maps multi-vector signals to three definitive outcomes:
   - **🟢 ALLOW**: Auto-executes via the sandboxed Tool Layer.
   - **🟡 HUMAN REVIEW**: Execution pauses; designated supervisor (`manager_21`) can inspect and approve or reject.
   - **🔴 BLOCK**: Hard halt; tool layer is never contacted.
+
 
 ### 3.4. Four-Screen React UI (`frontend/`)
 - **Screen 1: Agent Console**: User input, prompt presets, agent selection, NPU telemetry, and reasoning preview.

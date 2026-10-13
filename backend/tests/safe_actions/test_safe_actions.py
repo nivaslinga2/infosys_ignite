@@ -5,10 +5,6 @@ from app.models.decision import DecisionOutcome
 
 @pytest.mark.asyncio
 async def test_autonomous_refund_below_threshold():
-    """
-    Refund ₹2,000 is under ₹5,000 threshold and authorized for finance_operator.
-    Should yield ALLOW.
-    """
     contract = contract_builder.build_contract(
         tool="refund_payment",
         target={"customer": "C1024", "amount": 2000.0},
@@ -23,10 +19,6 @@ async def test_autonomous_refund_below_threshold():
 
 @pytest.mark.asyncio
 async def test_safe_ticket_creation():
-    """
-    Creating a support ticket is a safe, reversible (R1) operation.
-    Should yield ALLOW.
-    """
     contract = contract_builder.build_contract(
         tool="create_support_ticket",
         target={"title": "Login timeout issue", "priority": "low"},
@@ -40,10 +32,6 @@ async def test_safe_ticket_creation():
 
 @pytest.mark.asyncio
 async def test_read_only_customer_lookup():
-    """
-    Looking up customer record is a read-only, non-destructive query.
-    Should yield ALLOW.
-    """
     contract = contract_builder.build_contract(
         tool="get_customer_details",
         target={"customer_id": "C1024"},

@@ -3,9 +3,6 @@ from typing import Dict, Any
 class DatabaseTool:
     @staticmethod
     def execute_sql(query: str, database: str = "production_db") -> Dict[str, Any]:
-        """
-        Executes SQL query against specified target database.
-        """
         return {
             "status": "SUCCESS",
             "tool": "execute_sql",

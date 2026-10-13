@@ -3,9 +3,6 @@ from typing import Dict, Any
 class EmailTool:
     @staticmethod
     def send_email(to: str, subject: str, body: str) -> Dict[str, Any]:
-        """
-        Sends email communication to specified recipient.
-        """
         return {
             "status": "SUCCESS",
             "tool": "send_email",
@@ -23,5 +20,5 @@ class EmailTool:
             "ticket_id": f"TICK-{abs(hash(title)) % 9000 + 1000}",
             "title": title,
             "priority": priority,
-            "message": f"Support ticket created successfully."
+            "message": "Support ticket created successfully."
         }

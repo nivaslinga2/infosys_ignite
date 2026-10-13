@@ -3,9 +3,6 @@ from typing import Dict, Any
 class PaymentTool:
     @staticmethod
     def refund_payment(customer_id: str, amount: float, reason: str = "Customer request") -> Dict[str, Any]:
-        """
-        Executes customer refund. Side effect: initiates financial ledger reversal.
-        """
         return {
             "status": "SUCCESS",
             "transaction_id": f"TXN-REF-{customer_id}-992",

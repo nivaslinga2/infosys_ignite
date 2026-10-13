@@ -1,39 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-deep: #090d16;
-  --bg-surface: #0f172a;
-  --bg-card: #131d35;
-  --bg-card-hover: #192644;
-  --border-subtle: #1e293b;
-  --border-active: #334155;
-  --border-glow: #38bdf840;
-
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
-
-  --color-allow: #10b981;
-  --color-allow-bg: rgba(16, 185, 129, 0.12);
-  --color-allow-border: rgba(16, 185, 129, 0.35);
-
-  --color-review: #f59e0b;
-  --color-review-bg: rgba(245, 158, 11, 0.12);
-  --color-review-border: rgba(245, 158, 11, 0.35);
-
-  --color-block: #ef4444;
-  --color-block-bg: rgba(239, 68, 68, 0.14);
-  --color-block-border: rgba(239, 68, 68, 0.4);
-
-  --color-qualcomm: #e11d48;
-  --color-qualcomm-glow: rgba(225, 29, 72, 0.25);
-  --color-snapdragon: #f43f5e;
-
-  --color-opa: #0284c7;
-  --color-opa-bg: rgba(2, 132, 199, 0.15);
-
+  --bg-deep: #060a12;
+  --bg-surface: #0b1120;
+  --bg-card: rgba(15, 23, 42, 0.65);
+  --border-subtle: rgba(51, 65, 85, 0.45);
+  --border-glow: rgba(99, 102, 241, 0.35);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  color: var(--text-main);
+  color: #f8fafc;
   background-color: var(--bg-deep);
 }
 
@@ -45,8 +19,13 @@
 
 body {
   min-height: 100vh;
-  background: radial-gradient(circle at 50% 0%, #151f38 0%, #090d16 65%);
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.15), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 20%, rgba(225, 29, 72, 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 10% 80%, rgba(59, 130, 246, 0.07), transparent 60%),
+    #060a12;
   overflow-x: hidden;
+  color: #f8fafc;
 }
 
 code, pre, .font-mono {
@@ -57,49 +36,59 @@ code, pre, .font-mono {
   font-family: 'Outfit', sans-serif;
 }
 
-/* Glassmorphism utility */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  background: rgba(11, 18, 33, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 .glass-card {
-  background: rgba(19, 29, 53, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
-  border-radius: 10px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(51, 65, 85, 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(96, 165, 250, 0.4);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(99, 102, 241, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px -8px rgba(0, 0, 0, 0.5);
 }
 
-/* Pulse animation */
+.glow-rose {
+  box-shadow: 0 0 25px -5px rgba(225, 29, 72, 0.35);
+}
+
+.glow-indigo {
+  box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.35);
+}
+
 @keyframes pulseGlow {
   0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.04); }
+  50% { opacity: 1; transform: scale(1.03); }
 }
 
 .animate-pulse-glow {
   animation: pulseGlow 2.5s infinite ease-in-out;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #060a12;
 }
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
-  border-radius: 4px;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;

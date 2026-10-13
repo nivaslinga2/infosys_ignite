@@ -5,14 +5,16 @@ from app.api.validate import router as validate_router
 from app.api.approval import router as approval_router
 from app.api.execution import router as execution_router
 from app.api.audit import router as audit_router
+from app.api.guardrails import router as guardrails_router
+
+from app.middleware.rate_limit import RateLimitMiddleware
 
 app = FastAPI(
-    title="AgentShield - Qualcomm Autonomous AI Security Gateway",
-    description="Zero-trust action interception and multi-vector independent validation gateway for AI agents.",
+    title="AgentShield Gateway",
     version="1.0.0"
 )
 
-# CORS middleware for React frontend
+app.add_middleware(RateLimitMiddleware, max_requests=120, window_seconds=60)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,19 +23,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register API routes
+
 app.include_router(agent_router)
 app.include_router(validate_router)
 app.include_router(approval_router)
 app.include_router(execution_router)
 app.include_router(audit_router)
+app.include_router(guardrails_router)
+
 
 @app.get("/")
 async def health_check():
     return {
         "status": "ONLINE",
         "service": "AgentShield Gateway",
-        "architecture": "Propose -> Intercept -> Contract -> Parallel Validate -> Decide -> Gate -> Execute",
         "pep_active": True,
         "qualcomm_npu_active": True
     }

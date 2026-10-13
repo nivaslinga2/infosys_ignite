@@ -9,10 +9,6 @@ class SemanticValidator:
         self.qc = qualcomm_client
 
     async def validate_semantics(self, contract: ActionContract) -> CheckResult:
-        """
-        AI Semantic Validator powered by Qualcomm AI.
-        Analyzes the real semantic meaning, sensitivity, and side effects of proposed action.
-        """
         tool = contract.tool
         target = contract.target
         amount = float(target.get("amount", 0.0))
@@ -27,7 +23,6 @@ class SemanticValidator:
 
         qc_response = await self.qc.generate_completion(system_prompt, user_prompt)
         
-        # Determine semantic categorization
         category = "system"
         sensitivity = "low"
         destructive = False
@@ -73,14 +68,13 @@ class SemanticValidator:
             category = "communication"
             external_side_effect = True
             sensitivity = "low" if tool == "create_support_ticket" else "medium"
-            details = f"Outbound dispatch of communication payload."
+            details = "Outbound dispatch of communication payload."
 
         elif tool == "read_file":
             category = "filesystem"
             sensitivity = "low"
             details = "Read-only file retrieval operation."
 
-        # Pass or Flag status based on semantic risk
         status = "PASS"
         passed = True
         if sensitivity == "critical" or destructive:

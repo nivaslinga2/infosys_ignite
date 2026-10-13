@@ -8,13 +8,13 @@ class DecisionOutcome(str, Enum):
     BLOCK = "BLOCK"
 
 class ReversibilityTier(str, Enum):
-    R1 = "R1"  # Easily reversible (e.g. create draft, ticket)
-    R2 = "R2"  # Reversible with effort/window (e.g. payment refund within 24h)
-    R3 = "R3"  # Irreversible / Destructive (e.g. database drop, permanent wipe)
+    R1 = "R1"
+    R2 = "R2"
+    R3 = "R3"
 
 class SemanticClassification(BaseModel):
     category: str
-    sensitivity: str  # low, medium, high, critical
+    sensitivity: str
     destructive: bool
     external_side_effect: bool
     bulk_operation: bool = False
@@ -22,7 +22,7 @@ class SemanticClassification(BaseModel):
 
 class CheckResult(BaseModel):
     passed: bool
-    status: str  # PASS, WARN, FAIL
+    status: str
     score: Optional[float] = None
     reason: str
     metadata: Dict[str, Any] = Field(default_factory=dict)
@@ -35,9 +35,14 @@ class ValidationReport(BaseModel):
     reversibility: CheckResult
     intent_alignment: CheckResult
     provenance: CheckResult
+    content_safety: Optional[CheckResult] = None
+    topic_control: Optional[CheckResult] = None
+    pii_assessment: Optional[CheckResult] = None
+    jailbreak_defense: Optional[CheckResult] = None
     composite_risk_score: float
-    risk_level: str  # LOW, MEDIUM, HIGH, CRITICAL
+    risk_level: str
     reversibility_tier: ReversibilityTier
     decision: DecisionOutcome
     explanation: str
     qualcomm_telemetry: Dict[str, Any] = Field(default_factory=dict)
+

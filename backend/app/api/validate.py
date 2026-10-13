@@ -11,14 +11,9 @@ router = APIRouter(prefix="/api/validate", tags=["Validation"])
 
 @router.post("", response_model=ValidationReport)
 async def validate_action(contract: ActionContract):
-    """
-    AgentShield Policy Enforcement Point (PEP).
-    Conducts independent multi-vector validation on the ActionContract.
-    """
     try:
         report = await decision_engine.evaluate_action(contract)
 
-        # Record audit trail
         audit_record = AuditRecord(
             action_id=contract.action_id,
             user=contract.user,
@@ -41,10 +36,6 @@ async def validate_action(contract: ActionContract):
 
 @router.post("/normalize-and-validate", response_model=ValidationReport)
 async def normalize_and_validate(payload: Dict[str, Any]):
-    """
-    Convenience endpoint: Takes raw proposal and normalizes it to ActionContract,
-    then executes full validation suite.
-    """
     contract = contract_builder.build_contract(
         tool=payload.get("tool", "unknown"),
         target=payload.get("target", {}),

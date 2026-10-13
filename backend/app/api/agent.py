@@ -8,24 +8,24 @@ router = APIRouter(prefix="/api/agent", tags=["Agent"])
 AGENT_PROFILES = [
     AgentProfile(
         id="FinanceAgent",
-        name="Qualcomm Autonomous Finance Agent",
+        name="Finance Agent",
         role="finance_operator",
         allowed_tools=["refund_payment", "transfer_funds", "get_customer_details"],
-        description="Handles customer refunds and settlements within strict fiscal guardrails."
+        description="Processes refunds and settlements within predefined fiscal policy limits."
     ),
     AgentProfile(
         id="DatabaseOpsAgent",
-        name="Qualcomm Cloud Infrastructure Agent",
+        name="Database Operations Agent",
         role="db_administrator",
         allowed_tools=["execute_sql", "read_file"],
-        description="Autonomous operations agent for database telemetry and maintenance."
+        description="Handles database maintenance tasks and telemetry queries."
     ),
     AgentProfile(
         id="SupportAgent",
-        name="Customer Experience Agent",
+        name="Customer Support Agent",
         role="support_operator",
         allowed_tools=["create_support_ticket", "send_email", "get_customer_details"],
-        description="Customer ticket management and notification operations."
+        description="Manages customer ticket creation and notification workflows."
     )
 ]
 
@@ -35,12 +35,7 @@ async def get_profiles():
 
 @router.post("/propose", response_model=AgentProposalResponse)
 async def propose_action(request: AgentProposalRequest):
-    """
-    Qualcomm AI Agent reasons on the user's intent and produces an action proposal.
-    Notice: The tool is NEVER executed at this stage.
-    """
     try:
-        proposal = await intent_parser.plan_agent_proposal(request)
-        return proposal
+        return await intent_parser.plan_agent_proposal(request)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Agent proposal generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Proposal generation failed: {str(e)}")
