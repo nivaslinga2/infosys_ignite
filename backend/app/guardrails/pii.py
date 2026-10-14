@@ -192,6 +192,19 @@ class PIIMaskingEngine:
         has_secrets = "SECRET_API_KEY" in entity_types
         has_financial = "CREDIT_CARD" in entity_types or "SSN" in entity_types or "AADHAAR" in entity_types
 
+        # For send_email tool, an email address in the 'to' recipient field is expected
+        if contract.tool == "send_email" and entity_types == ["EMAIL"]:
+            to_addr = str(contract.target.get("to", ""))
+            body_str = str(contract.target.get("body", ""))
+            # If the only email detected is in the 'to' field and body has no other PII
+            if to_addr and not self.detect_pii(body_str):
+                return CheckResult(
+                    passed=True,
+                    status="PASS",
+                    reason="PII Verification Passed: Recipient email address is valid for send_email tool.",
+                    metadata={"entities_detected": ["EMAIL"], "count": 1, "recipient_whitelisted": True}
+                )
+
         # If exfiltrating via sensitive tools (export_data, external email, curl/cmd)
         is_export_tool = contract.tool in ["export_data", "send_email", "execute_sql"]
 

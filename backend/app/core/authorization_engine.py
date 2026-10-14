@@ -18,12 +18,14 @@ ROLE_PERMISSIONS: Dict[str, List[str]] = {
     "support_operator": [
         "get_customer_details",
         "create_support_ticket",
-        "send_email"
+        "send_email",
+        "read_file"
     ],
     "support": [
         "get_customer_details",
         "create_support_ticket",
-        "send_email"
+        "send_email",
+        "read_file"
     ],
     "db_administrator": [
         "execute_sql",
@@ -36,7 +38,8 @@ ROLE_PERMISSIONS: Dict[str, List[str]] = {
     ],
     "operator": [
         "create_support_ticket",
-        "get_customer_details"
+        "get_customer_details",
+        "read_file"
     ],
     "general_user": [
         "create_support_ticket"
@@ -46,11 +49,11 @@ ROLE_PERMISSIONS: Dict[str, List[str]] = {
     ]
 }
 
-# Transaction limits
-AUTONOMOUS_REFUND_LIMIT = 5000.0   # $50 or ₹5,000
-SUPERVISOR_REFUND_LIMIT = 50000.0  # $5,000 or ₹50,000
-AUTONOMOUS_TRANSFER_LIMIT = 1000.0
-SUPERVISOR_TRANSFER_LIMIT = 25000.0
+# Transaction limits (aligned with OPA finance.rego)
+AUTONOMOUS_REFUND_LIMIT = 5000.0       # <= ₹5,000 is autonomous
+SUPERVISOR_REFUND_LIMIT = 50000.0      # <= ₹50,000 requires supervisor review; > ₹50,000 blocks
+AUTONOMOUS_TRANSFER_LIMIT = 20000.0    # <= ₹20,000 is autonomous
+SUPERVISOR_TRANSFER_LIMIT = 100000.0   # <= ₹100,000 requires supervisor review; > ₹100,000 blocks
 
 class AuthorizationEngine:
     """
