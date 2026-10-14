@@ -6,9 +6,11 @@ from app.ai.qualcomm_client import qualcomm_client
 
 SAFETY_TAXONOMY_PATTERNS = {
     "VIOLENCE_AND_THREATS": [
-        r"\b(?:kill\s+all|assassinate|bomb\s+recipe|build\s+a\s+bomb|massacre|physical\s+violence|shoot\s+up)\b",
+        r"\b(?:kill|murder|assassinate|slaughter|strangle|shoot|stab|harm|hurt|execute|poison)\s+(?:a\s+|an\s+|the\s+|all\s+|some\s+|any\s+|my\s+|our\s+)?(?:person|people|human|someone|somebody|anyone|anybody|man|woman|child|victim|boss|enemy)\b",
+        r"\b(?:want\s+to\s+kill|how\s+to\s+kill|going\s+to\s+kill|plan\s+to\s+kill|threaten\s+to\s+kill)\b",
+        r"\b(?:bomb\s+recipe|build\s+a\s+bomb|massacre|physical\s+violence|shoot\s+up)\b",
         r"\b(?:how\s+to\s+(?:make|build)\s+(?:explosives|weapons|toxins))\b",
-        r"\b(?:murder|strangle|decapitate|slaughter)\b"
+        r"\b(?:decapitate|slaughter)\b"
     ],
     "SELF_HARM": [
         r"\b(?:suicide\s+(?:method|guide|instruction)|how\s+to\s+kill\s+myself)\b",
@@ -25,6 +27,9 @@ SAFETY_TAXONOMY_PATTERNS = {
         r"\b(?:hack(?:ing)?\s+(?:a\s+)?(?:bank|firewall|system|network|database|server|account|password))\b",
         r"\b(?:how\s+to\s+hack|help\s+me\s+with\s+hack(?:ing)?|bypass\s+(?:a\s+)?firewall|infiltrate\s+network)\b",
         r"\b(?:port\s+scan|brute\s*force\s+password|sql\s+injection\s+attack|cross\s*site\s*scripting\s+attack)\b"
+    ],
+    "SYNTHETIC_MEDIA_AND_DEEPFAKES": [
+        r"\b(?:morph\s+(?:a\s+)?(?:video|image|photo|face)|deepfake|face\s*swap|swap\s+faces|generate\s+(?:fake|nude)\s+video)\b"
     ],
     "TOXICITY_AND_HARASSMENT": [
         r"\b(?:shut\s+the\s+fuck\s+up|worthless\s+piece\s+of\s+shit|go\s+die\s+in\s+a\s+hole)\b"

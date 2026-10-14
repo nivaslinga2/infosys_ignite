@@ -24,6 +24,9 @@ FORBIDDEN_TOPIC_PATTERNS = {
     ],
     "UNRELATED_PHILOSOPHY_AND_ENTERTAINMENT": [
         r"\b(?:meaning\s+of\s+life|tell\s+me\s+a\s+bedtime\s+story|celebrity\s+gossip)\b"
+    ],
+    "SYNTHETIC_MEDIA_AND_DEEPFAKES": [
+        r"\b(?:morph\s+(?:a\s+)?(?:video|image|photo|face)|deepfake|face\s*swap|swap\s+faces|generate\s+(?:fake|nude)\s+video)\b"
     ]
 }
 
