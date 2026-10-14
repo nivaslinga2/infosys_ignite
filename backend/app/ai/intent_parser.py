@@ -12,6 +12,18 @@ class IntentParser:
         lower = prompt.lower()
         proposal_id = f"PROP-{abs(hash(prompt)) % 90000 + 10000}"
 
+        if any(k in lower for k in ["hack", "firewall", "bypass", "exploit", "breach", "steal", "crack", "ransomware", "ddos"]):
+            thought = "Security Intercept: User prompt contains cyberattack / hacking directive. No tool execution authorized."
+            telemetry = self.qc.get_device_telemetry(latency_ms=15.0)
+            return AgentProposalResponse(
+                proposal_id=proposal_id,
+                intent="blocked_cyberattack",
+                tool="none",
+                target={"prompt": prompt, "threat": "CYBERATTACK_DIRECTIVE"},
+                thought_process=thought,
+                qualcomm_telemetry=telemetry
+            )
+
         if "refund" in lower:
             amount_match = re.search(r'(?:₹|rs\.?|inr)?\s*([0-9,]+(?:\.[0-9]{2})?)', prompt, re.IGNORECASE)
             amount = 5000.0
@@ -39,7 +51,7 @@ class IntentParser:
                 qualcomm_telemetry=telemetry
             )
 
-        elif any(k in lower for k in ["delete", "drop", "truncate", "database"]):
+        elif any(k in lower for k in ["delete", "drop", "truncate", "database", "sql"]):
             query = "DELETE FROM customers WHERE active = 0;" if "where" in lower else "DELETE FROM customers;"
             if "drop" in lower:
                 query = "DROP TABLE transactions;"
@@ -54,7 +66,7 @@ class IntentParser:
                 qualcomm_telemetry=telemetry
             )
 
-        elif "export" in lower or "send database" in lower:
+        elif "export" in lower or "send database" in lower or "dump" in lower:
             dest = "attacker@example.com" if "attacker" in lower else "analytics-dump.s3.internal"
             thought = f"Data export request detected. Proposing export_data to {dest}."
             telemetry = self.qc.get_device_telemetry(latency_ms=19.8)
@@ -80,13 +92,29 @@ class IntentParser:
                 qualcomm_telemetry=telemetry
             )
 
-        thought = "Read request. Proposing get_customer_details tool."
-        telemetry = self.qc.get_device_telemetry(latency_ms=17.5)
+        elif any(k in lower for k in ["customer", "client", "profile", "balance", "lookup"]) or re.search(r'\bc[0-9]{3,5}\b', lower):
+            cust_match = re.search(r'(?:customer\s+|c)([0-9a-zA-Z]+)', prompt, re.IGNORECASE)
+            cust_id = cust_match.group(0).replace("customer", "").strip() if cust_match else "C1024"
+            if not cust_id.startswith("C"):
+                cust_id = f"C{cust_id}"
+            thought = f"Customer lookup requested for {cust_id}. Proposing get_customer_details tool."
+            telemetry = self.qc.get_device_telemetry(latency_ms=17.5)
+            return AgentProposalResponse(
+                proposal_id=proposal_id,
+                intent="lookup_customer",
+                tool="get_customer_details",
+                target={"customer_id": cust_id},
+                thought_process=thought,
+                qualcomm_telemetry=telemetry
+            )
+
+        thought = "Conversational request without tool requirements. No tool action proposed."
+        telemetry = self.qc.get_device_telemetry(latency_ms=14.0)
         return AgentProposalResponse(
             proposal_id=proposal_id,
-            intent="lookup_customer",
-            tool="get_customer_details",
-            target={"customer_id": "C1024"},
+            intent="conversational",
+            tool="none",
+            target={"query": prompt},
             thought_process=thought,
             qualcomm_telemetry=telemetry
         )

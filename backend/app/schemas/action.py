@@ -19,7 +19,8 @@ class ProposedAction(BaseModel):
         "get_customer_details",
         "send_email",
         "read_file",
-        "export_data"
+        "export_data",
+        "none"
     ]
     arguments: Dict[str, Any] = Field(default_factory=dict)
     target: str = Field(default="")

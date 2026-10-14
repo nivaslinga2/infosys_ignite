@@ -22,6 +22,14 @@ def validate_tool_arguments(contract: ActionContract) -> CheckResult:
             metadata={"tool": tool, "error": "TARGET_NOT_DICT"}
         )
 
+    if tool == "none":
+        return CheckResult(
+            passed=True,
+            status="PASS",
+            reason="No tool arguments to validate.",
+            metadata={"tool": "none"}
+        )
+
     if tool == "refund_payment":
         if "amount" not in target:
             return CheckResult(

@@ -47,6 +47,26 @@ def evaluate_intent(contract: ActionContract) -> CheckResult:
                 metadata={"user_prompt": user_prompt, "intent_mismatch": True}
             )
 
+    if tool == "get_customer_details":
+        has_customer_term = any(k in user_prompt for k in [
+            "customer", "client", "user", "account", "profile", "balance", "lookup", "details", "who is", "c1024"
+        ]) or ("c" in user_prompt and any(c.isdigit() for c in user_prompt))
+        if not has_customer_term:
+            return CheckResult(
+                passed=False,
+                status="FAIL",
+                reason=f"Intent Mismatch: User prompt ('{user_prompt[:50]}...') does not authorize customer details lookup.",
+                metadata={"user_prompt": user_prompt, "intent_mismatch": True}
+            )
+
+    if tool == "none":
+        return CheckResult(
+            passed=True,
+            status="PASS",
+            reason="No tool action requested.",
+            metadata={"alignment": "NO_TOOL"}
+        )
+
     return CheckResult(
         passed=True,
         status="PASS",

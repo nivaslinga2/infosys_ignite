@@ -18,6 +18,10 @@ FORBIDDEN_TOPIC_PATTERNS = {
     "CRYPTO_AND_GAMBLING": [
         r"\b(?:which\s+crypto\s+will\s+100x|betting\s+odds|best\s+online\s+casino|roulette\s+strategy)\b"
     ],
+    "UNAUTHORIZED_HACKING_AND_EXPLOITATION": [
+        r"\b(?:hack\s+a\s+bank|hack(?:ing)?\s+firewall|bypass\s+firewall|illegal\s+penetration|break\s+into\s+network)\b",
+        r"\b(?:steal\s+credentials|ddos\s+attack|exploit\s+vulnerability|how\s+to\s+hack)\b"
+    ],
     "UNRELATED_PHILOSOPHY_AND_ENTERTAINMENT": [
         r"\b(?:meaning\s+of\s+life|tell\s+me\s+a\s+bedtime\s+story|celebrity\s+gossip)\b"
     ]

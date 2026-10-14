@@ -21,7 +21,10 @@ SAFETY_TAXONOMY_PATTERNS = {
     "CYBERATTACK_AND_MALWARE": [
         r"\b(?:ransomware\s+script|create\s+a\s+botnet|ddos\s+target|keylogger\s+payload)\b",
         r"\b(?:exploit\s+zeroday|reverse\s+shell\s+script|trojan\s+downloader)\b",
-        r"\b(?:exfiltrate\s+all\s+credentials|dump\s+sam\s+hashes)\b"
+        r"\b(?:exfiltrate\s+all\s+credentials|dump\s+sam\s+hashes)\b",
+        r"\b(?:hack(?:ing)?\s+(?:a\s+)?(?:bank|firewall|system|network|database|server|account|password))\b",
+        r"\b(?:how\s+to\s+hack|help\s+me\s+with\s+hack(?:ing)?|bypass\s+(?:a\s+)?firewall|infiltrate\s+network)\b",
+        r"\b(?:port\s+scan|brute\s*force\s+password|sql\s+injection\s+attack|cross\s*site\s*scripting\s+attack)\b"
     ],
     "TOXICITY_AND_HARASSMENT": [
         r"\b(?:shut\s+the\s+fuck\s+up|worthless\s+piece\s+of\s+shit|go\s+die\s+in\s+a\s+hole)\b"
