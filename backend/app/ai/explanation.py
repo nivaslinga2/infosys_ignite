@@ -17,28 +17,44 @@ def generate_explanation(
     schema_reason: Optional[str] = None
 ) -> str:
     if outcome == DecisionOutcome.BLOCK:
-        lines = [
-            f"ACTION BLOCKED: Execution of '{tool}' exceeds security risk tolerance (Risk: {risk_score:.0f}/100, Reversibility: {reversibility.value}).",
-            f"- Policy: {auth_reason}",
-            f"- Intent: {intent_reason}",
-            f"- Provenance: {provenance_reason}"
-        ]
-        if semantic_reason and any(k in semantic_reason.lower() for k in ["fail", "fail-closed", "offline", "error", "block"]):
-            lines.append(f"- AI Semantic Validator: {semantic_reason}")
-        if schema_reason and any(k in schema_reason.lower() for k in ["fail", "schema", "invalid", "malformed"]):
-            lines.append(f"- Schema Validation: {schema_reason}")
-        if jailbreak_reason and any(k in jailbreak_reason.lower() for k in ["fail", "block", "attack", "injection", "adversarial"]):
-            lines.append(f"- Jailbreak Defense: {jailbreak_reason}")
+        header = (
+            f"REQUEST BLOCKED: Harmful or prohibited directive intercepted (Risk: {risk_score:.0f}/100, Reversibility: {reversibility.value})."
+            if tool == "none"
+            else f"ACTION BLOCKED: Execution of '{tool}' exceeds security risk tolerance (Risk: {risk_score:.0f}/100, Reversibility: {reversibility.value})."
+        )
+        lines = [header]
+
+        # Prioritize showing active guardrail violations first
         if content_safety_reason and any(k in content_safety_reason.lower() for k in ["fail", "violation", "unsafe", "block", "prohibited"]):
             lines.append(f"- Content Safety: {content_safety_reason}")
         if topic_reason and any(k in topic_reason.lower() for k in ["fail", "violation", "prohibited", "rail", "block"]):
             lines.append(f"- Topic Control: {topic_reason}")
+        if jailbreak_reason and any(k in jailbreak_reason.lower() for k in ["fail", "block", "attack", "injection", "adversarial"]):
+            lines.append(f"- Jailbreak Defense: {jailbreak_reason}")
+        if schema_reason and any(k in schema_reason.lower() for k in ["fail", "schema", "invalid", "malformed"]):
+            lines.append(f"- Schema Validation: {schema_reason}")
+        if auth_reason and any(k in auth_reason.lower() for k in ["fail", "prohibited", "unauthorized", "exceeds", "denied", "block"]):
+            lines.append(f"- Policy: {auth_reason}")
+        elif tool != "none":
+            lines.append(f"- Policy: {auth_reason}")
+
+        if provenance_reason:
+            if any(k in provenance_reason.lower() for k in ["untrusted", "tainted", "third-party", "external", "fail"]):
+                lines.append(f"- Provenance: {provenance_reason}")
+            elif tool != "none":
+                lines.append(f"- Provenance: {provenance_reason}")
+
+        if intent_reason and any(k in intent_reason.lower() for k in ["mismatch", "unauthorized", "fail"]):
+            lines.append(f"- Intent Alignment: {intent_reason}")
+
+        if semantic_reason and any(k in semantic_reason.lower() for k in ["fail", "fail-closed", "offline", "error", "block"]):
+            lines.append(f"- AI Semantic Validator: {semantic_reason}")
+
         if pii_reason and any(k in pii_reason.lower() for k in ["fail", "leakage", "block", "secret"]):
             lines.append(f"- PII Assessment: {pii_reason}")
 
         lines.append("Execution halted at policy enforcement gateway. No changes applied.")
         return "\n".join(lines)
-
 
     if outcome == DecisionOutcome.REVIEW:
         lines = [
@@ -64,4 +80,3 @@ class ExplanationEngine:
     generate_explanation = staticmethod(generate_explanation)
 
 explanation_engine = ExplanationEngine()
-

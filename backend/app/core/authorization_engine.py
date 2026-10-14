@@ -69,6 +69,22 @@ class AuthorizationEngine:
         env = contract.environment.lower()
         prov = contract.provenance
 
+        # Non-tool conversational requests pass tool authorization; guardrails evaluate content safety & topics
+        if tool == "none":
+            if contract.intent == "blocked_cyberattack":
+                return CheckResult(
+                    passed=False,
+                    status="FAIL",
+                    reason="Security Policy SEC-001: Cyberattack or malicious directive blocked. No tool execution permitted.",
+                    metadata={"role": role, "tool": "none", "rule": "block_cyberattack_directive"}
+                )
+            return CheckResult(
+                passed=True,
+                status="PASS",
+                reason="Conversational request: No external tool invocation required.",
+                metadata={"role": role, "tool": "none", "rule": "conversational_passthrough"}
+            )
+
         # 1. Role-Based Access Control (RBAC)
         allowed_tools = ROLE_PERMISSIONS.get(role, [])
         if tool not in allowed_tools:
