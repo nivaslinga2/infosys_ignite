@@ -117,17 +117,21 @@ export default function App() {
       const validationData = await validateActionContract(contractPayload);
 
       let execResult = null;
-      if (validationData.decision === 'ALLOW') {
+      if (validationData.decision === 'ALLOW' && proposalData.tool && proposalData.tool !== 'none') {
         const execOk = await executeApprovedAction(actionId);
         if (execOk) {
           execResult = await fetchAuditRecord(actionId);
         }
       }
 
+      const messageText = (proposalData.tool && proposalData.tool !== 'none')
+        ? `Proposed action: invoke tool ${proposalData.tool} with target ${JSON.stringify(proposalData.target)}.`
+        : (proposalData.thought_process || validationData.explanation || 'Request analyzed. No tool action authorized.');
+
       const assistantMsg = {
         id: `asst-${Date.now()}`,
         role: 'assistant',
-        text: `Proposed action: invoke tool ${proposalData.tool} with target ${JSON.stringify(proposalData.target)}.`,
+        text: messageText,
         proposal: proposalData,
         validation: validationData,
         contract: contractPayload,
