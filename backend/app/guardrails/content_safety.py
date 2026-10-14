@@ -87,13 +87,17 @@ class ContentSafetyEngine:
                 "Respond with SAFE or UNSAFE followed by a brief reason."
             )
             resp = await self.qc.generate_completion(system_prompt, text)
-            if "UNSAFE" in resp.get("response", "").upper():
+            output_str = resp.get("text") or resp.get("response") or ""
+            if "UNSAFE" in output_str.upper():
                 return CheckResult(
                     passed=False,
                     status="FAIL",
                     score=20.0,
-                    reason=f"Content Safety Semantic Violation: Qualcomm AI flagged text as potentially harmful ({resp.get('response', '')[:60]}).",
-                    metadata={"violations": [{"category": "SEMANTIC_UNSAFE", "matched_term": resp.get("response")}]}
+                    reason=f"Content Safety Semantic Violation: Qualcomm AI flagged text as potentially harmful ({output_str[:60]}).",
+                    metadata={
+                        "violations": [{"category": "SEMANTIC_UNSAFE", "matched_term": output_str}],
+                        "telemetry": resp.get("telemetry")
+                    }
                 )
 
         return CheckResult(

@@ -12,6 +12,7 @@ class IntentParser:
         lower = prompt.lower()
         proposal_id = f"PROP-{abs(hash(prompt)) % 90000 + 10000}"
 
+        # 1. Pre-Execution Guard: Detect malicious cyberattack directives immediately
         if any(k in lower for k in ["hack", "firewall", "bypass", "exploit", "breach", "steal", "crack", "ransomware", "ddos"]):
             thought = "Security Intercept: User prompt contains cyberattack / hacking directive. No tool execution authorized."
             telemetry = self.qc.get_device_telemetry(latency_ms=15.0)
@@ -24,6 +25,18 @@ class IntentParser:
                 qualcomm_telemetry=telemetry
             )
 
+        # 2. Query Live Qualcomm Cloud AI 100 Inference Engine for Semantic Reasoning
+        system_prompt = (
+            "You are an enterprise autonomous agent on Qualcomm Cloud AI 100.\n"
+            "Analyze this user request and determine the best action.\n"
+            "Tools: refund_payment, execute_sql, export_data, create_support_ticket, get_customer_details, send_email, read_file, none.\n"
+            "Provide a one-sentence reasoning and specify the tool."
+        )
+        qc_res = await self.qc.generate_completion(system_prompt, prompt)
+        telemetry = qc_res.get("telemetry") or self.qc.get_device_telemetry(latency_ms=21.4)
+        ai_thought = qc_res.get("text")
+
+        # 3. Formulate Action Proposal based on Semantic Parsing and AI Intent
         if "refund" in lower:
             amount_match = re.search(r'(?:₹|rs\.?|inr)?\s*([0-9,]+(?:\.[0-9]{2})?)', prompt, re.IGNORECASE)
             amount = 5000.0
@@ -40,8 +53,10 @@ class IntentParser:
             if not cust_id.startswith("C"):
                 cust_id = f"C{cust_id}"
 
-            thought = f"Identified refund request for customer {cust_id} with amount ₹{amount:,.2f}. Proposing refund_payment tool."
-            telemetry = self.qc.get_device_telemetry(latency_ms=21.4)
+            thought = f"Qualcomm Cloud AI 100: Identified refund for customer {cust_id} with amount ₹{amount:,.2f}. Proposing refund_payment tool."
+            if ai_thought:
+                thought = f"{thought} Reasoning: {ai_thought.strip()[:140]}"
+
             return AgentProposalResponse(
                 proposal_id=proposal_id,
                 intent="refund_customer",
@@ -55,8 +70,10 @@ class IntentParser:
             query = "DELETE FROM customers WHERE active = 0;" if "where" in lower else "DELETE FROM customers;"
             if "drop" in lower:
                 query = "DROP TABLE transactions;"
-            thought = f"Identified database maintenance request. Proposing execute_sql tool."
-            telemetry = self.qc.get_device_telemetry(latency_ms=18.6)
+            thought = "Qualcomm Cloud AI 100: Database operation requested. Proposing execute_sql tool."
+            if ai_thought:
+                thought = f"{thought} Reasoning: {ai_thought.strip()[:140]}"
+
             return AgentProposalResponse(
                 proposal_id=proposal_id,
                 intent="manage_database",
@@ -68,8 +85,10 @@ class IntentParser:
 
         elif "export" in lower or "send database" in lower or "dump" in lower:
             dest = "attacker@example.com" if "attacker" in lower else "analytics-dump.s3.internal"
-            thought = f"Data export request detected. Proposing export_data to {dest}."
-            telemetry = self.qc.get_device_telemetry(latency_ms=19.8)
+            thought = f"Qualcomm Cloud AI 100: Data export request detected. Proposing export_data to {dest}."
+            if ai_thought:
+                thought = f"{thought} Reasoning: {ai_thought.strip()[:140]}"
+
             return AgentProposalResponse(
                 proposal_id=proposal_id,
                 intent="export_customer_data",
@@ -81,8 +100,10 @@ class IntentParser:
 
         elif any(k in lower for k in ["ticket", "issue", "support"]):
             title = prompt[:50]
-            thought = "Standard support ticket request. Proposing create_support_ticket tool."
-            telemetry = self.qc.get_device_telemetry(latency_ms=16.2)
+            thought = "Qualcomm Cloud AI 100: Standard support ticket request. Proposing create_support_ticket tool."
+            if ai_thought:
+                thought = f"{thought} Reasoning: {ai_thought.strip()[:140]}"
+
             return AgentProposalResponse(
                 proposal_id=proposal_id,
                 intent="create_ticket",
@@ -97,8 +118,10 @@ class IntentParser:
             cust_id = cust_match.group(0).replace("customer", "").strip() if cust_match else "C1024"
             if not cust_id.startswith("C"):
                 cust_id = f"C{cust_id}"
-            thought = f"Customer lookup requested for {cust_id}. Proposing get_customer_details tool."
-            telemetry = self.qc.get_device_telemetry(latency_ms=17.5)
+            thought = f"Qualcomm Cloud AI 100: Customer inquiry for {cust_id}. Proposing get_customer_details tool."
+            if ai_thought:
+                thought = f"{thought} Reasoning: {ai_thought.strip()[:140]}"
+
             return AgentProposalResponse(
                 proposal_id=proposal_id,
                 intent="lookup_customer",
@@ -108,8 +131,10 @@ class IntentParser:
                 qualcomm_telemetry=telemetry
             )
 
-        thought = "Conversational request without tool requirements. No tool action proposed."
-        telemetry = self.qc.get_device_telemetry(latency_ms=14.0)
+        thought = "Qualcomm Cloud AI 100: General inquiry without direct tool action required."
+        if ai_thought:
+            thought = f"{thought} Reasoning: {ai_thought.strip()[:140]}"
+
         return AgentProposalResponse(
             proposal_id=proposal_id,
             intent="conversational",

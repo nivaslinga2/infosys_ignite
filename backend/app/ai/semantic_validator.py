@@ -93,6 +93,11 @@ class SemanticValidator:
             details=details
         )
 
+        if qc_response.get("text"):
+            ai_text = qc_response["text"].strip().replace("\n", " ")
+            if len(ai_text) > 10:
+                details = f"{details} [Qualcomm Cloud AI 100: {ai_text[:120]}]"
+
         return CheckResult(
             passed=passed,
             status=status,
