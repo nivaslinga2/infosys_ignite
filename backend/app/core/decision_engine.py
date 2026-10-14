@@ -79,7 +79,10 @@ class DecisionEngine:
         risk_score, risk_level, risk_breakdown = risk_engine.calculate_risk(
             contract=contract,
             semantic_result=semantic_res,
-            reversibility_tier=reversibility_tier
+            reversibility_tier=reversibility_tier,
+            content_safety_res=content_safety_res,
+            jailbreak_res=jailbreak_res,
+            topic_res=topic_res
         )
 
         risk_check = CheckResult(
