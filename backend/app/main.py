@@ -1,4 +1,13 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Search and load .env from root and backend
+root_dir = Path(__file__).resolve().parent.parent.parent
+backend_dir = Path(__file__).resolve().parent.parent
+load_dotenv(root_dir / ".env")
+load_dotenv(backend_dir / ".env")
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles

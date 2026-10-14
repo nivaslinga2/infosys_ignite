@@ -7,6 +7,12 @@ import os
 import sys
 import subprocess
 import argparse
+from dotenv import load_dotenv
+
+# Explicitly load .env from project root and backend
+project_root = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(project_root, ".env"))
+load_dotenv(os.path.join(project_root, "backend", ".env"))
 
 def main():
     parser = argparse.ArgumentParser(description="Start AgentShield Production Server")

@@ -14,9 +14,10 @@ services:
       - ENVIRONMENT=production
       - QUALCOMM_MODEL=Llama-3.1-8B
       - INFERENCE_CLOUD_ENDPOINT=https://aisuite.cirrascale.com/apis/v2
-      # Provide your key here or via host .env file:
-      - INFERENCE_CLOUD_API_KEY=${INFERENCE_CLOUD_API_KEY:-}
-      - QUALCOMM_API_KEY=${QUALCOMM_API_KEY:-}
+      # Active Qualcomm Cloud AI 100 credentials:
+      - INFERENCE_CLOUD_API_KEY=${INFERENCE_CLOUD_API_KEY:-ebecbacb-9b2c-4484-bbb7-451bd2bd79a0}
+      - QUALCOMM_API_KEY=${QUALCOMM_API_KEY:-z0lezzephkyz78wmtembi1q3n5t3tqhlzsl4vxiq}
+      - QUALCOMM_TARGET_HARDWARE=${QUALCOMM_TARGET_HARDWARE:-Qualcomm Cloud AI 100}
     volumes:
       # Optional persistence for audit log records across container restarts
       - audit_data:/app/backend/app/database
